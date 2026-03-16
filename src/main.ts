@@ -6,6 +6,7 @@ import fastifyCompress from '@fastify/compress';
 import fastifyCookie from '@fastify/cookie'
 import { internalErrorHandler } from './core/error-handlers/internal-error.handler';
 import healthRoute from './modules/health/health.route';
+import { gracefulShutdownPlugin } from './core/plugins/graceful-shutdown.plugin';
 
 function bootstrap() {
   const app = fastify({
@@ -13,6 +14,8 @@ function bootstrap() {
   });
 
   // ----- Register Plugins -----
+  // Graceful shutdown plugin to handle termination signals and perform cleanup
+  app.register(gracefulShutdownPlugin, { cb: gracefulShutdownCallback })
   // CORS configuration - adjust the origin as needed for production
   app.register(fastifyCors, {
     origin: envConfig.CORS_ORIGIN, // Adjust as needed for production
@@ -52,5 +55,10 @@ function bootstrap() {
   });
 }
 
-
 bootstrap();
+
+const gracefulShutdownCallback = async () => {
+  // Perform any necessary cleanup here, such as closing database connections
+  console.log('Performing cleanup before shutdown...');
+  // Example: await database.close();
+}
