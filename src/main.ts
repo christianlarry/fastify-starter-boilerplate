@@ -5,6 +5,7 @@ import fastifyHelmet from '@fastify/helmet';
 import fastifyCompress from '@fastify/compress';
 import fastifyCookie from '@fastify/cookie'
 import { internalErrorHandler } from './core/error-handlers/internal-error.handler';
+import healthRoute from './modules/health/health.route';
 
 function bootstrap() {
   const app = fastify({
@@ -29,16 +30,13 @@ function bootstrap() {
     secret: envConfig.COOKIE_SECRET, // for cookies signature, required for cookies "signed" option
   })
 
-  // ----- Define Routes -----
+  // ----- Register Module Routes -----
+  // Health check module
+  app.register(healthRoute);
 
 
   // ----- Error Handler -----
   app.setErrorHandler(internalErrorHandler);
-
-  // Health check route
-  app.get('/health', async () => {
-    return { status: 'ok' };
-  });
 
   // Start the server
   const PORT = envConfig.APP_PORT;
