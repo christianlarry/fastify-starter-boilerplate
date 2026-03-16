@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import path from 'path';
 import { z } from 'zod';
-import { logger } from './logger';
 
 // Load environment variables from .env file
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
@@ -26,10 +25,10 @@ const validateEnv = () => {
   const validationResult = envSchema.safeParse(process.env);
 
   if (!validationResult.success) {
-    logger.info('Environment variable validation failed with the following errors: %s', z.formatError(validationResult.error));
+    console.error('Environment variable validation failed with the following errors: %s', z.formatError(validationResult.error));
     throw new Error('Invalid environment variables');
   } else {
-    logger.info('Environment variable validation succeeded. Loaded configuration: %O', validationResult.data);
+    console.info('Environment variable validation succeeded.');
     return validationResult.data;
   }
 }
