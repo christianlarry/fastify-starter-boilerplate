@@ -1,8 +1,13 @@
 # Ignore node_modules and dist folders
 /node_modules
 /dist
+
+# Ignore environment variable files
 .env
-.env.*
+.env.production
+.env.development
+.env.testing
+.env.local 
 
 # Logs
 logs
